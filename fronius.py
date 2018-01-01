@@ -12,13 +12,15 @@
 #
 ###
 
-print("*************************************************")
-print("THIS IS NOT RUNNING YET - Check the CODE First :)")
-print("*************************************************")
-exit()
+# print("*************************************************")
+# print("THIS IS NOT RUNNING YET - Check the CODE First :)")
+# print("*************************************************")
+# exit()
 
 import requests
 import json
+import pprint
+import time
 
 # You might want to add  ip.ip.ip.ip  fronius to your hosts file
 
@@ -281,16 +283,63 @@ def GetPowerFlowRealtimeData():
     dataRq = '/solar_api/v1/GetPowerFlowRealtimeData.fcgi'
     return getData(hostname,dataRq)
 
+def PowerFlowRealtimeData(jPFRD):
+# Collect the Inverter Data
+# Does not include Optional Fields at this time
+    Inverters = dict()
+    Site = dict()
+# There could be more than 1 inverter here -  Bitcoin Miners :)
+    for i in jPFRD['Body']['Data']['Inverters']:
+        for i in jPFRD['Body']['Data']['Inverters']:
+            Inverters['DeviceId'] = i
+            Inverters['Version'] = jPFRD['Body']['Data']['Version']
+            Inverters['Timestamp'] = jPFRD['Head']['Timestamp']
+            Inverters['DT'] = jPFRD['Body']['Data']['Inverters'][i]['DT']
+            Inverters['E_Day'] = jPFRD['Body']['Data']['Inverters'][i]['E_Day']
+            Inverters['E_Total'] = jPFRD['Body']['Data']['Inverters'][i]['E_Total']
+            Inverters['E_Year'] = jPFRD['Body']['Data']['Inverters'][i]['E_Year']
+            Inverters['P'] = jPFRD['Body']['Data']['Inverters'][i]['P']
 
+# Collect Site data (single row)
+        Site['Timestamp'] = jPFRD['Head']['Timestamp']
+        Site['Version'] = jPFRD['Body']['Data']['Version']
+        Site['E_Day'] = jPFRD['Body']['Data']['Site']['E_Day']
+        Site['E_Total'] = jPFRD['Body']['Data']['Site']['E_Total']
+        Site['E_Year'] = jPFRD['Body']['Data']['Site']['E_Year']
+        Site['Meter_Location'] = jPFRD['Body']['Data']['Site']['Meter_Location']
+        Site['Mode'] = jPFRD['Body']['Data']['Site']['Mode']
+        Site['P_Akku'] = jPFRD['Body']['Data']['Site']['P_Akku']
+        Site['P_Grid'] = jPFRD['Body']['Data']['Site']['P_Grid']
+        Site['P_Load'] = jPFRD['Body']['Data']['Site']['P_Load']
+        Site['P_PV'] = jPFRD['Body']['Data']['Site']['P_PV']
+        Site['rel_Autonomy'] = jPFRD['Body']['Data']['Site']['rel_Autonomy']
+        Site['rel_SelfConsumption'] = jPFRD['Body']['Data']['Site']['rel_SelfConsumption']
+    return [Site, Inverters]
+
+### Just Initial Testing Code
+def testPowerFlowRealtimeData():
+    pp = pprint.PrettyPrinter(indent=4)
+    cnt = 0
+    while cnt < 10:
+        cnt = cnt + 1
+        Site, Inverters = PowerFlowRealtimeData(GetPowerFlowRealtimeData())
+        pp.pprint(Site)
+        pp.pprint(Inverters)
+        time.sleep(10)
+
+
+
+#testPowerFlowRealtimeData()
 
 #jArchiveData = getArchiveData('1.9.2017','30.12.2017')
 #jPowerFLowRealtimeData = GetPowerFlowRealtimeData()
+#Site, Inverters = PowerFlowRealtimeData(jPowerFLowRealtimeData)
 #jDeviceInfo = GetActiveDeviceInfo('Inverter')
 #jInverterRealtimeData = GetInverterRealtimeData()
 #jSensorRealtimeData = GetSensorRealtimeData()
 #jStringRealtimeData = GetStringRealtimeData(DataCollection='LastErrorStringControlData')
 #jStringRealtimeData = GetStringRealtimeData(DataCollection='CurrentSumStringControlData')
-#jLoggerInfo = GetLoggerInfo()
+jLoggerInfo = GetLoggerInfo()
 #jLoggerLEDInfo = GetLoggerLEDInfo()
 #jInverterInfo = GetInverterInfo()
 
