@@ -30,4 +30,5 @@ Queries the Inverter every 5 seconds.
 1. Test and cleanup function options
 2. Build option to return json or csv data
 3. Create a Module.
+4. Add code to check that Inverter is up before doing anything.  Necessary if powered by sunlight only
 
