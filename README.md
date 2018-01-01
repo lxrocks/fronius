@@ -15,6 +15,17 @@ There are a number of calls which I cannot testand I'm still trying to figure ou
 
 Use at your own risk - some of the code may save you some typing :)
 
+### collector.py
+
+Collect data from the fronius Symo and log to sqlite database
+
+Assumes you have host 'fronius'  your /etc/hosts file.
+
+Creates a sqlite db called fronius.sqlite with 
+two tables called _Site_ and _Inverters_
+
+Queries the Inverter every 5 seconds. 
+
 ### Todo
 1. Test and cleanup function options
 2. Build option to return json or csv data

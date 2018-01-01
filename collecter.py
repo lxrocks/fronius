@@ -13,7 +13,9 @@ import sqlite3
 # This will create a sqlite db called fronius.sqlite and add
 # two tables called Site & Inverters
 # It will then start logging data every 5 seconds
-#
+# Todo:
+# 1. Error Handling
+# 2. CLean up exit - use a signal handler or something
 
 
 hostname = "fronius"
@@ -149,6 +151,7 @@ def main():
         writeSQL(cn,cur,table="Inverters",row=Inverters)
         # Loop every 5 seconds
         time.sleep(5)
+    cn.close()
         
 
 
@@ -156,6 +159,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 #pd.read_sql_query("SELECT * from Inverters", cn)
