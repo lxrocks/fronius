@@ -146,11 +146,15 @@ def main():
     cur = cn.cursor()
     dSite, dInverters = InitPowerFlowRealtimeData(cn)
     while True:
-        Site, Inverters = PowerFlowRealtimeData(GetPowerFlowRealtimeData())
-        writeSQL(cn,cur,table="Site",row=Site)
-        writeSQL(cn,cur,table="Inverters",row=Inverters)
-        # Loop every 5 seconds
-        time.sleep(5)
+        try:
+            Site, Inverters = PowerFlowRealtimeData(GetPowerFlowRealtimeData())
+            writeSQL(cn,cur,table="Site",row=Site)
+            writeSQL(cn,cur,table="Inverters",row=Inverters)
+            # Loop every 5 seconds
+            time.sleep(5)
+        except:
+            time.sleep(60)
+            print("sleeping")
     cn.close()
         
 
